@@ -1,0 +1,41 @@
+<launch>
+	<arg name="enable_octomap" value="true"/>
+	<arg name="enable_controller" value="true"/>
+	<arg name="enable_planner" value="true"/>
+	<arg name="move_robot" value="true"/>
+	<arg name="explore_time" default="240.0"/>
+    
+	<group if="$(arg enable_octomap)">
+    	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server" args=" " cwd="node" output="screen">
+    		<param name="frame_id"            	  value="/odom" />
+		<remap from="/cloud_in" to="/camera/depth/points" /> <!-- simulator -->
+    		<!--remap from="/cloud_in" to="/pc_from_scan" /--> <!-- simulator -->
+    		<param name="resolution"            	  value="0.05" />
+    		<param name="latch"            	  value="False" />
+    		<!--remap from="/cloud_in" to="/camera/depth_registered/points" /--> <!-- real turtlebot -->
+		</node>
+    </group>
+
+    <!--Setting time untill which explore node will run-->
+    <param name="explore_time" value="$(arg explore_time)"/>
+    
+    <node pkg="control_turtlebot" type="laserscan_to_pointcloud" name="laserscan_to_pointcloud" respawn="true" output="screen" />
+
+    <group if="$(arg move_robot)">
+    	<include file="$(find turtlebot_gazebo)/launch/gmapping_demo.launch"/>
+        <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+	<node pkg="final_project" type="mapping.py" name="mapping" respawn="true" output="screen" />
+        <node pkg="final_project" type="control.py" name="control" respawn="true" output="screen" />
+    </group>
+    
+    <group if="$(arg enable_controller)">
+    	<node pkg="control_turtlebot" type="controller_turtlebot.py" name="controller_turtlebot" respawn="true" output="screen" />
+    </group>
+    
+    <group if="$(arg enable_planner)">
+	    <!-- Offline planner ompl -->
+		<rosparam command="load" file="$(find control_turtlebot)/launch/config/planner_parameters.yaml" />
+		<node pkg="control_turtlebot" type="tutorial_offline_planner_R2" name="tutorial_offline_planner_R2" output="screen" />
+	</group>
+
+</launch>

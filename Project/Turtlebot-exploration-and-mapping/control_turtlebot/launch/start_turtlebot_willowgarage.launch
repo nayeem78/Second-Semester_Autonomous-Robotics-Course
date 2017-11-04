@@ -1,0 +1,7 @@
+<launch>
+    <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
+        <arg name="world_file" value="$(find control_turtlebot)/worlds/willowgarage.world"/>
+    </include>
+    <!--include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/-->
+    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find control_turtlebot)/launch/config/robot.rviz"/-->
+</launch>

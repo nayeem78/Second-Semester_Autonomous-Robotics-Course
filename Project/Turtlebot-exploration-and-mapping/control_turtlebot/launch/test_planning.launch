@@ -1,0 +1,6 @@
+<launch>
+	<!-- Offline planner ompl -->
+	<rosparam command="load" file="$(find control_turtlebot)/launch/config/tests_blocks.yaml" />
+	<node pkg="control_turtlebot" type="tutorial_offline_planner_R2" name="tutorial_offline_planner_R2" output="screen" />
+
+</launch>

@@ -1,0 +1,29 @@
+<launch>
+	<arg name="enable_turtlebot_simulation" value="true"/>
+	<arg name="enable_keyboard_teleoperation" value="false"/>
+	<arg name="enable_rviz" value="true"/>
+
+    <group if="$(arg enable_turtlebot_simulation)">
+	    <remap from="cmd_vel_mux/input/navi" to="cmd_vel" />
+
+	    <include file="$(find control_turtlebot)/launch/start_turtlebot_willowgarage.launch"/>  <!-- other ROS distributions -->
+
+	    <!--include file="$(find turtlebot_gazebo)/launch/turtlebot_playground.launch"/-->  <!-- ROS hydro -->
+
+	    <!--include file="$(find control_turtlebot)/launch/willow.launch"/-->  <!-- other ROS distributions -->
+
+	    <group if="$(arg enable_rviz)">
+			<include file="$(find control_turtlebot)/launch/view_robot.launch"/> <!-- Line can be changed for new rviz file -->
+	    </group>
+    </group>
+
+    <group unless="$(arg enable_turtlebot_simulation)">
+		<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+		<include file="$(find turtlebot_bringup)/launch/3dsensor.launch"/>
+    </group>
+
+    <group if="$(arg enable_keyboard_teleoperation)">
+    	<!--include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/-->
+    </group>
+
+</launch>

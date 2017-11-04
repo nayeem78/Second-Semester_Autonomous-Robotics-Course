@@ -1,0 +1,4 @@
+## Service 
+bool start
+---
+geometry_msgs/Pose2D[] poses
